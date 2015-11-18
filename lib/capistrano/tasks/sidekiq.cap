@@ -214,18 +214,19 @@ namespace :sidekiq do
     end
   end
 
-  def upload_sidekiq_template(from, to, role)
-    template = sidekiq_template(from, role)
+  def upload_sidekiq_template(from, to, role, role_name)
+    template = sidekiq_template(from, role, role_name)
     upload!(StringIO.new(ERB.new(template).result(binding)), to)
   end
 
-  def sidekiq_template(name, role)
+  def sidekiq_template(name, role, role_name)
     local_template_directory = fetch(:sidekiq_monit_templates_path)
 
     search_paths = [
       "#{name}-#{role.hostname}-#{fetch(:stage)}.erb",
       "#{name}-#{role.hostname}.erb",
       "#{name}-#{fetch(:stage)}.erb",
+      "#{name}-#{role_name}.erb",
       "#{name}.erb"
     ].map { |filename| File.join(local_template_directory, filename) }
 

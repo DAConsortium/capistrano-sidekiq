@@ -41,6 +41,7 @@ namespace :sidekiq do
 
     desc 'Monitor Sidekiq monit-service'
     task :monitor do
+      start = Time.now
       Array(fetch(:sidekiq_role)).each do |role_name|
         on roles(role_name) do
           sidekiq_processes(role_name).times do |idx|
@@ -53,10 +54,13 @@ namespace :sidekiq do
           end
         end
       end
+      finish = Time.now
+      STDOUT.puts "=== sidekiq:monit:monitor takes #{finish - start} sec"
     end
 
     desc 'Unmonitor Sidekiq monit-service'
     task :unmonitor do
+      start = Time.now
       Array(fetch(:sidekiq_role)).each do |role_name|
         on roles(role_name) do
           sidekiq_processes(role_name).times do |idx|
@@ -68,6 +72,8 @@ namespace :sidekiq do
           end
         end
       end
+      finish = Time.now
+      STDOUT.puts "=== sidekiq:monit:unmonitor takes #{finish - start} sec"
     end
 
     desc 'Start Sidekiq monit-service'

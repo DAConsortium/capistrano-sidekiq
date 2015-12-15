@@ -132,6 +132,7 @@ namespace :sidekiq do
 
   desc 'Quiet sidekiq (stop processing new tasks)'
   task :quiet do
+    start = Time.now
     on roles fetch(:sidekiq_role) do
       if test("[ -d #{release_path} ]") # fixes #11
         for_each_process(true) do |pid_file, idx|
@@ -141,10 +142,13 @@ namespace :sidekiq do
         end
       end
     end
+    finish = Time.now
+    STDOUT.puts "=== sidekiq:quiet takes #{finish - start} sec"
   end
 
   desc 'Stop sidekiq'
   task :stop do
+    start = Time.now
     on roles fetch(:sidekiq_role) do
       if test("[ -d #{release_path} ]")
         for_each_process(true) do |pid_file, idx|
@@ -154,10 +158,13 @@ namespace :sidekiq do
         end
       end
     end
+    finish = Time.now
+    STDOUT.puts "=== sidekiq:stop takes #{finish - start} sec"
   end
 
   desc 'Start sidekiq'
   task :start do
+    start = Time.now
     Array(fetch(:sidekiq_role)).each do |role|
       on roles(role) do
         for_each_process do |pid_file, idx|
@@ -165,6 +172,8 @@ namespace :sidekiq do
         end
       end
     end
+    finish = Time.now
+    STDOUT.puts "=== sidekiq:start takes #{finish - start} sec"
   end
 
   desc 'Restart sidekiq'
